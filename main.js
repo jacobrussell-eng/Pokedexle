@@ -26,15 +26,17 @@ const gameSpace = document.querySelector("#gameSpace");
 const textSpace = document.querySelector("#textSpace");
 
 // make letterboxes:
-function generateLetterBoxes() {
+function generateLetterBoxes(currentMon) {
     monLength = currentMon.length();
     gameSpace.style.gridTemplate = "repeat(6, 1fr) / repeat(${monLength}, 1fr)";
     for (var r = 0; r < 6; r++) {
         for (var c = 0; c < monLength; c++) {
             const newDiv = document.createElement('div');
             newDiv.classList.add('letterbox');
-            newDiv.id = "letter-r${r+1}-c${c+1}";
-            newDiv.textContent = "r${r+1}-c${c+1}";
+            newDiv.id = "letter-r${r}-c${c}";
+            newDiv.textContent = "r${r}-c${c}";
+
+            gameSpace.appendChild(newDiv);
         }
     }
 }
@@ -46,7 +48,7 @@ function startGame() {
     fetchNames();
     ran = Math.floor(Math.random()*809);
     currentMon = nameArray[ran];
-    generateLetterBoxes();
+    generateLetterBoxes(currentMon);
     // textSpace.textContent = currentMon;
     // console.log()
 }
