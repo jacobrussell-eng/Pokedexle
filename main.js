@@ -45,10 +45,14 @@ function generateLetterBoxes(currentMon) {
 function startGame() {
     startOverlay.style.display = "none";
     gameSpace.style.display = "grid";
-    fetchNames();
-    ran = Math.floor(Math.random()*809);
-    currentMon = nameArray[ran];
-    generateLetterBoxes(currentMon);
+    fetchNames().then(() => {
+        ran = Math.floor(Math.random()*809);
+        console.log("random num 0-809: ", ran);
+        currentMon = nameArray[ran];
+        console.log("current mon: ", currentMon);
+        generateLetterBoxes(currentMon);
+    });
+
     // textSpace.textContent = currentMon;
     // console.log()
 }

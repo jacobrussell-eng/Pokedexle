@@ -1,4 +1,4 @@
-# Pokedexle
+# Pokedexle (WIP)
  Wordle clone using Pokemon names
 
 ## Resources:
