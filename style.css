@@ -93,3 +93,9 @@ main {
     transform: translate(-50%, -30%);
     border: 1px solid black;
 }
+
+.letterbox {
+    background-color: #fff;
+    border: 0.5px dashed pink;
+    border-radius: 25%;
+}
