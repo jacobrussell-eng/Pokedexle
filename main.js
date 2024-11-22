@@ -5,7 +5,7 @@ let currentMon;
 let monLength;
 
 const nameRequest = new Request('pokemon_names.txt');
-function fetchNames() {
+async function fetchNames() {
     fetch(nameRequest).then((response) => {
         console.log(response.ok);
         if (!response.ok) {
@@ -45,13 +45,13 @@ function generateLetterBoxes(currentMon) {
 async function startGame() {
     startOverlay.style.display = "none";
     gameSpace.style.display = "grid";
-    await fetchNames().then(() => {
-        ran = Math.floor(Math.random()*809);
-        console.log("random num 0-809: ", ran);
-        currentMon = nameArray[ran];
-        console.log("current mon: ", currentMon);
-        generateLetterBoxes(currentMon);
-    });
+    await fetchNames();
+
+    ran = Math.floor(Math.random()*809);
+    console.log("random num 0-809: ", ran);
+    currentMon = nameArray[ran];
+    console.log("current mon: ", currentMon);
+    generateLetterBoxes(currentMon);
 
     // textSpace.textContent = currentMon;
     // console.log()
