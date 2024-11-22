@@ -2,13 +2,13 @@
  Wordle clone using Pokemon names
 
 ## To-do:
--[]: Generate Letterboxes across 6 rows and n columns (n = name length)
--[]: Allow user input, one box at a time
--[]: Initiate end of line word checks, with yellow & green responses
--[]: Handle Win/Loss states
--[]: Tidy UI
--[]: Design a Favicon
--[]: Optional: experiment with Pokemon data APIs? (Types, Pictures)
+- [ ] Generate Letterboxes across 6 rows and n columns (n = name length)
+- [ ] Allow user input, one box at a time
+- [ ] Initiate end of line word checks, with yellow & green responses
+- [ ] Handle Win/Loss states
+- [ ] Tidy UI
+- [ ] Design a Favicon
+- [ ] Optional: experiment with Pokemon data APIs? (Types, Pictures)
 
 ## Resources:
 Pokemon Font: [CDN Fonts](https://www.cdnfonts.com/pokemon-solid.font)\
