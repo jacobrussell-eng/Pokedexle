@@ -42,10 +42,10 @@ function generateLetterBoxes(currentMon) {
 }
 
 // start game:
-function startGame() {
+async function startGame() {
     startOverlay.style.display = "none";
     gameSpace.style.display = "grid";
-    fetchNames().then(() => {
+    await fetchNames().then(() => {
         ran = Math.floor(Math.random()*809);
         console.log("random num 0-809: ", ran);
         currentMon = nameArray[ran];
