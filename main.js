@@ -31,18 +31,19 @@ async function fetchNames() {
     })
 }
 
-// make letterboxes:
+// Make letterboxes:
 function generateLetterBoxes() {
     monLength = currentMon.length;
-    gameSpace.style.gridTemplate = `repeat(6, max(10vh,50px)) / repeat(${monLength}, max(10vh,50px))`;
-    gameSpace.style.width = `max(${monLength*10}vh,${monLength*50}px)`;
-    gameSpace.style.height = `max(60vh,300px)`;
+    gameSpace.style.gridTemplate = `repeat(6, max(8vh,50px)) / repeat(${monLength}, max(8vh,50px))`;
+    gameSpace.style.width = `max(${monLength*8}vh,${monLength*50}px)`;
+    gameSpace.style.height = `max(48vh,300px)`;
     for (var r = 0; r < 6; r++) {
         for (var c = 0; c < monLength; c++) {
             const newDiv = document.createElement('div');
             newDiv.classList.add('letterbox');
             newDiv.id = `letter-r${r}-c${c}`;
-            newDiv.textContent = `r${r}-c${c}`;
+            // newDiv.textContent = `r${r}-c${c}`;
+            newDiv.textContent = " ";
 
             gameSpace.appendChild(newDiv);
         }
@@ -50,9 +51,10 @@ function generateLetterBoxes() {
     guessMatrix = Array.from({length:6},() => Array.from({length:monLength}, ()=>"")); // thx ben
 }
 
-// user input function:
+// User input function:
 const inputHandler = (event) => {
-    if (event.key.match(/[a-zA-Z]/)) {
+    console.log("Key pressed: " + event.key)
+    if ((event.keyCode >= 65 && event.keyCode <= 90) || (event.keyCode >= 97 && event.keyCode <= 122)) {
         letterInsert(event.key.toUpperCase());
     }
     else if (event.key == "Backspace") {
@@ -60,7 +62,7 @@ const inputHandler = (event) => {
     }
 }
 
-
+// Add letter to box and guess matrix:
 function letterInsert(letter){
     guessMatrix[currentRow][currentCol] = letter;
     document.getElementById(`letter-r${currentRow}-c${currentCol}`).textContent = letter;
@@ -78,9 +80,16 @@ function letterInsert(letter){
     }
 }
 
-function letterDelete(){}
+// Backspace function: 
+function letterDelete(){
+    if (currentCol != 0) { // protects from undoing prev guesses
+        currentCol--;
+        guessMatrix[currentRow][currentCol] = "";
+        document.getElementById(`letter-r${currentRow}-c${currentCol}`).textContent = " ";
+    }
+}
 
-
+// Check guess:
 function checkRow() {
     let perfectLetters = 0
     rowToCheck = guessMatrix[currentRow];
@@ -94,13 +103,17 @@ function checkRow() {
         } else if (answerArray.includes(rowToCheck[i]) && rowToCheck[i] != answerArray[i]) {
             document.getElementById(`letter-r${currentRow}-c${i}`).style.backgroundColor = "yellow";
         } 
-        // else {
-        //     allTrue = false;
-        // }
+        else {
+            document.getElementById(`letter-r${currentRow}-c${i}`).style.backgroundColor = "gray";
+        }
+    }
+    if (currentRow == 5 && perfectLetters != monLength) {
+        loseGame();
     }
     return perfectLetters;
 }
 
+// Win State:
 function winGame() {
     window.removeEventListener("keypress", inputHandler);
     // HTML win screen:
@@ -114,7 +127,9 @@ function winGame() {
     endScreen.appendChild(restartButton);
 }
 
+// Loss State:
 function loseGame() {
+    console.log("You Lose!")
     window.removeEventListener("keypress", inputHandler);
     // HTML win screen:
     endScreen.style.display = "flex";
@@ -127,18 +142,29 @@ function loseGame() {
     endScreen.appendChild(restartButton);
 }
 
-// start game:
+// Start game:
 async function startGame() {
+    // Reset game variables:
+    guessMatrix = [];
+    gameSpace.innerHTML = "";
+    currentCol = 0; currentRow = 0;
+
+    // HTML overlay handling:
     startOverlay.style.display = "none";
     endScreen.style.display = "none";
     gameSpace.style.display = "grid";
+
+    // Pokemon Name fetch request:
     await fetchNames();
     window.addEventListener("keypress", inputHandler);
 
+    // Random pick:
     ran = Math.floor(Math.random()*809);
     console.log("random num 0-809: ", ran);
     currentMon = nameArray[ran];
     console.log("current mon: ", currentMon);
+
+
     generateLetterBoxes();
 
     // console.log()
