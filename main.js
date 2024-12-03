@@ -7,24 +7,34 @@ let currentMon; // turn string to iterable for individual letterboxes?
 let monLength;
 let currentRow = 0;
 let currentCol = 0;
-let guessMatrix = []
+let guessMatrix = [] // values within letterboxes
+let currentGuess = []; // will store the positions of correct letters when checking rows
+let greens = new Set(); let yellows = new Set(); let grays = new Set();
+const keyboardLayout = [
+    ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
+    ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
+    ['Z', 'X', 'C', 'V', 'B', 'N', 'M', 'Backspace']
+];
+const backIcon = new Image();
+backIcon.src = 'backspace-arrow.png';
 
 // HTML connectors:
 const startOverlay = document.querySelector("#startScreen");
 const gameSpace = document.querySelector("#gameSpace");
 const endScreen = document.querySelector("#endScreen");
+const keyboardSpace = document.querySelector("#keyboardSpace");
 
 // Fetching names from the .txt:
 const nameRequest = new Request('pokemon_names.txt');
 async function fetchNames() {
     await fetch(nameRequest).then((response) => {
-        console.log(response.ok);
+        // console.log(response.ok);
         if (!response.ok) {
             console.log("Response error");
         }
         return response.text();
     }).then((text) => {
-        nameArray = text.split('\n');
+        nameArray = text.split('\n'); 
         console.log(nameArray);
     }).catch((/*error*/) => {
         console.log("Fetch failed")
@@ -51,9 +61,32 @@ function generateLetterBoxes() {
     guessMatrix = Array.from({length:6},() => Array.from({length:monLength}, ()=>"")); // thx ben
 }
 
+// Make Keyboard:
+function generateKeycaps() {
+    keyboardLayout.forEach(row => {
+        const keyRow = document.createElement('div');
+        keyRow.classList.add('keyrow');
+        keyRow.style.display = "flex";
+        row.forEach(letter => {
+            const keycap = document.createElement('button');
+            keycap.classList.add('keycap');
+            if (letter == "Backspace") {
+                keycap.innerHTML = `<img src="backspace-arrow.png" style="width: 1.2em;">`;
+                keycap.addEventListener('click', ()=>{letterDelete()});
+            } else {
+                keycap.id = `keycap-${letter}`;
+                keycap.textContent = letter;
+                keycap.addEventListener('click', ()=>{letterInsert(letter)});
+            }
+            keyRow.appendChild(keycap);
+        })
+        keyboardSpace.appendChild(keyRow);
+    })
+}
+
 // User input function:
 const inputHandler = (event) => {
-    console.log("Key pressed: " + event.key)
+    // console.log("Key pressed: " + event.key)
     if ((event.keyCode >= 65 && event.keyCode <= 90) || (event.keyCode >= 97 && event.keyCode <= 122)) {
         letterInsert(event.key.toUpperCase());
     }
@@ -66,12 +99,12 @@ const inputHandler = (event) => {
 function letterInsert(letter){
     guessMatrix[currentRow][currentCol] = letter;
     document.getElementById(`letter-r${currentRow}-c${currentCol}`).textContent = letter;
-    console.log(guessMatrix);
+    // console.log(guessMatrix);
     if (currentCol != (monLength-1)) {
         currentCol++;
     } else {
         let correctGuesses = checkRow();
-        console.log("correctGuesses = " + correctGuesses)
+        // console.log("correctGuesses = " + correctGuesses)
         if (correctGuesses == monLength) {
             winGame();
         } else {
@@ -82,6 +115,7 @@ function letterInsert(letter){
 
 // Backspace function: 
 function letterDelete(){
+    // console.log("delete!");
     if (currentCol != 0) { // protects from undoing prev guesses
         currentCol--;
         guessMatrix[currentRow][currentCol] = "";
@@ -96,17 +130,66 @@ function checkRow() {
     answerArray = currentMon.toUpperCase().split('');
     console.log("row to check: " + rowToCheck)
     console.log("answerArray: " + answerArray)
-    for (i=0;i<rowToCheck.length;i++) {
-        if (rowToCheck[i] == answerArray[i]) {
+
+    // Dict with no. of each unique letter in the answer:
+    const answerUniqueCounts = {};
+    answerArray.forEach(letter => answerUniqueCounts[letter] = (answerUniqueCounts[letter] || 0) + 1);
+
+    // Positions of confirmed greens for this row:
+    currentGuess = Array.from({length:monLength}, ()=>" ");
+
+    for (i=0;i<rowToCheck.length;i++) { // Green pass
+        if (rowToCheck[i] == answerArray[i]) {        
+
             document.getElementById(`letter-r${currentRow}-c${i}`).style.backgroundColor = "green";
+            currentGuess[i] = "green"; // rename array to isGreens? 
+            answerUniqueCounts[rowToCheck[i]]--;
+
+            greens.add(rowToCheck[i]);
+            if (yellows.has(rowToCheck[i])) {
+                yellows.delete(rowToCheck[i]);
+            } else if (grays.has(rowToCheck[i])) {
+                grays.delete(rowToCheck[i]);
+            }
+
             perfectLetters++;
-        } else if (answerArray.includes(rowToCheck[i]) && rowToCheck[i] != answerArray[i]) {
-            document.getElementById(`letter-r${currentRow}-c${i}`).style.backgroundColor = "yellow";
-        } 
-        else {
-            document.getElementById(`letter-r${currentRow}-c${i}`).style.backgroundColor = "gray";
-        }
+
+        }   
     }
+
+    for (j=0;j<rowToCheck.length;j++) { // Yellow & Gray pass
+        if (answerArray.includes(rowToCheck[j]) && currentGuess[j] != "green" && answerUniqueCounts[rowToCheck[j]] != 0) {
+
+            document.getElementById(`letter-r${currentRow}-c${j}`).style.backgroundColor = "yellow";
+            answerUniqueCounts[rowToCheck[j]]--;
+        
+            yellows.add(rowToCheck[j]);
+            if (grays.has(rowToCheck[j])) {
+                grays.delete(rowToCheck[j]);
+            }
+
+        } else {
+            if (currentGuess[j] != "green") {
+                document.getElementById(`letter-r${currentRow}-c${j}`).style.backgroundColor = "gray";
+                grays.add(rowToCheck[j]);
+            }
+        }
+
+    }
+
+    // remove dupes:
+    yellows.forEach(letter => { grays.delete(letter) });
+    greens.forEach(letter => { yellows.delete(letter); grays.delete(letter) });
+    // update keycap colors:
+    greens.forEach(letter => { document.getElementById(`keycap-${letter}`).style.backgroundColor = "green"; })
+    yellows.forEach(letter => { document.getElementById(`keycap-${letter}`).style.backgroundColor = "yellow"; })
+    grays.forEach(letter => { document.getElementById(`keycap-${letter}`).style.backgroundColor = "gray"; })
+
+    console.log("Current Guess " + currentGuess);
+    console.log("Greens: " + Array.from(greens));
+    console.log("Yellows: " + Array.from(yellows));
+    console.log("Grays: " + Array.from(grays));
+
     if (currentRow == 5 && perfectLetters != monLength) {
         loseGame();
     }
@@ -118,7 +201,9 @@ function winGame() {
     window.removeEventListener("keypress", inputHandler);
     // HTML win screen:
     endScreen.style.display = "flex";
-    endScreen.textContent = `Congrats! You guessed ${currentMon} in ${currentRow+1} tries!`;
+    if (currentRow==0) { endScreen.textContent = `Wow! You guessed ${nameArray[ran]} in 1 try!`; } 
+    else { endScreen.textContent = `Congrats! You guessed ${nameArray[ran]} in ${currentRow+1} tries!`; }
+    
 
     // Restart Button:
     const restartButton = document.createElement('button');
@@ -146,13 +231,16 @@ function loseGame() {
 async function startGame() {
     // Reset game variables:
     guessMatrix = [];
+    greens.clear(); yellows.clear(); grays.clear();
     gameSpace.innerHTML = "";
+    keyboardSpace.innerHTML = "";
     currentCol = 0; currentRow = 0;
 
     // HTML overlay handling:
     startOverlay.style.display = "none";
     endScreen.style.display = "none";
     gameSpace.style.display = "grid";
+    keyboardSpace.style.display = "flex";
 
     // Pokemon Name fetch request:
     await fetchNames();
@@ -161,11 +249,12 @@ async function startGame() {
     // Random pick:
     ran = Math.floor(Math.random()*809);
     console.log("random num 0-809: ", ran);
-    currentMon = nameArray[ran];
+    currentMon = nameArray[ran].replace(/[^a-zA-Z]/g, '');
     console.log("current mon: ", currentMon);
 
 
     generateLetterBoxes();
+    generateKeycaps();
 
     // console.log()
 }

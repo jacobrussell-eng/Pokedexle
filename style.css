@@ -55,7 +55,7 @@ main {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    border: 1px solid red;
+    /* border: 1px solid red; */
 }
 
 .halfCircle {
@@ -86,6 +86,7 @@ main {
     font-family: "GB Boot", sans-serif;
     font-size: x-large;
     user-select: none;
+    box-shadow: none;
 }
 .middleCircle:hover { background-color: red; color: #fff;}
 .middleCircle:active { margin-left: 1px; margin-top: 1px; filter: brightness(0.8);}
@@ -95,7 +96,7 @@ main {
     width: 60%;
     height: auto;
     position: absolute;
-    top: max(30%,140px); /* prevents clipping with the header */
+    top: max(25%,140px); /* prevents clipping with the header */
     left: 50%;
     transform: translate(-50%, -30%); /* 30% of gameSpace height is 90px */
 }
@@ -126,4 +127,37 @@ main {
     left: 50%; top: 50%;
     transform: translate(-50%,-50%);
     text-align: center;
+}
+
+#keyboardSpace {
+    width: min(60vw,80vw);
+    /* border: 1px solid black; */
+    height: 25vh;
+    display: none;
+    flex-wrap: nowrap;
+    flex-direction: column;
+    position: absolute;
+    justify-content: center;
+    align-items: start;
+    bottom: 5%;
+    left: 50%;
+    transform: translate(-50%,0%);
+}
+
+.keyrow {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+.keycap {
+    height: max(8vh,1.6em);
+    width: max(8vh,1.6em);
+    background-color: #fff;
+    border: 0.5px dashed red;
+    font-size: 1em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
