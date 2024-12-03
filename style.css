@@ -108,8 +108,9 @@ main {
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: large;
+    font-size: xx-large;
     margin: 0.5px;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 
 #endScreen {
@@ -132,7 +133,7 @@ main {
 #keyboardSpace {
     width: min(60vw,80vw);
     /* border: 1px solid black; */
-    height: 25vh;
+    height: 22vh;
     display: none;
     flex-wrap: nowrap;
     flex-direction: column;
@@ -152,12 +153,13 @@ main {
 }
 
 .keycap {
-    height: max(8vh,1.6em);
-    width: max(8vh,1.6em);
+    height: max(7vh,1.6em);
+    width: max(7vh,1.6em);
     background-color: #fff;
     border: 0.5px dashed red;
-    font-size: 1em;
+    /* font-size: 10cqh; */
     display: flex;
     align-items: center;
     justify-content: center;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }

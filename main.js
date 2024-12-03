@@ -13,8 +13,12 @@ let greens = new Set(); let yellows = new Set(); let grays = new Set();
 const keyboardLayout = [
     ['Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P'],
     ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L'],
-    ['Z', 'X', 'C', 'V', 'B', 'N', 'M', 'Backspace']
+    ['Enter', 'Z', 'X', 'C', 'V', 'B', 'N', 'M', 'Backspace']
 ];
+
+
+const submitIcon = new Image();
+submitIcon.src = 'arrow.png';
 const backIcon = new Image();
 backIcon.src = 'backspace-arrow.png';
 
@@ -70,9 +74,23 @@ function generateKeycaps() {
         row.forEach(letter => {
             const keycap = document.createElement('button');
             keycap.classList.add('keycap');
+            keycap.style.fontSize = `max(${keyboardSpace.offsetHeight*0.15}px,1em)`;
+            console.log("keyboardSpace offset height = " + keyboardSpace.offsetHeight);
             if (letter == "Backspace") {
-                keycap.innerHTML = `<img src="backspace-arrow.png" style="width: 1.2em;">`;
+                keycap.innerHTML = `<img src="backspace-arrow.png" style="height: ${keyboardSpace.offsetHeight*0.15}px;width:auto;">`;
                 keycap.addEventListener('click', ()=>{letterDelete()});
+            } else if (letter == "Enter") {
+                keycap.innerHTML = `<img src="arrow.png" style="height: ${keyboardSpace.offsetHeight*0.12}px;width:auto">`;
+                keycap.addEventListener('click', ()=> {
+                    if (currentCol == (monLength-1) && guessMatrix[currentRow][currentCol] != "") {
+                        let correctGuesses = checkRow();
+                        if (correctGuesses == monLength) {
+                            winGame();
+                        } else {
+                            currentRow++ , currentCol=0;
+                        }
+                    }
+                });
             } else {
                 keycap.id = `keycap-${letter}`;
                 keycap.textContent = letter;
@@ -80,6 +98,7 @@ function generateKeycaps() {
             }
             keyRow.appendChild(keycap);
         })
+
         keyboardSpace.appendChild(keyRow);
     })
 }
@@ -90,8 +109,18 @@ const inputHandler = (event) => {
     if ((event.keyCode >= 65 && event.keyCode <= 90) || (event.keyCode >= 97 && event.keyCode <= 122)) {
         letterInsert(event.key.toUpperCase());
     }
-    else if (event.key == "Backspace") {
+    else if (event.key === "Backspace" || event.keyCode == 8) {
         letterDelete();
+    }
+    else if (event.key === "Enter" || event.keyCode == 13) {
+        if (currentCol == (monLength-1) && guessMatrix[currentRow][currentCol] != "") {
+            let correctGuesses = checkRow();
+            if (correctGuesses == monLength) {
+                winGame();
+            } else {
+                currentRow++ , currentCol=0;
+            }
+        }
     }
 }
 
@@ -102,7 +131,9 @@ function letterInsert(letter){
     // console.log(guessMatrix);
     if (currentCol != (monLength-1)) {
         currentCol++;
-    } else {
+    } 
+    /* - Changed from Automatic to Enter key:
+    else {
         let correctGuesses = checkRow();
         // console.log("correctGuesses = " + correctGuesses)
         if (correctGuesses == monLength) {
@@ -111,16 +142,24 @@ function letterInsert(letter){
             currentRow++ , currentCol=0
         }
     }
+    */
 }
 
 // Backspace function: 
 function letterDelete(){
-    // console.log("delete!");
-    if (currentCol != 0) { // protects from undoing prev guesses
-        currentCol--;
+    console.log("currentCol in letterDelete: " + currentCol);
+
+    if (currentCol >= 0) { // protects from undoing prev guesses
+        if (currentCol != 0 && guessMatrix[currentRow][currentCol] == "") { currentCol--; }
         guessMatrix[currentRow][currentCol] = "";
-        document.getElementById(`letter-r${currentRow}-c${currentCol}`).textContent = " ";
+        document.getElementById(`letter-r${currentRow}-c${currentCol}`).textContent = " "; 
     }
+
+    // if (currentCol >= 0) { // protects from undoing prev guesses
+    //     guessMatrix[currentRow][currentCol] = "";
+    //     document.getElementById(`letter-r${currentRow}-c${currentCol}`).textContent = " ";  
+    //     if (currentCol != 0) { currentCol--; }
+    // }
 }
 
 // Check guess:
