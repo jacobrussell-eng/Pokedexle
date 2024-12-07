@@ -237,7 +237,7 @@ function checkRow() {
 
 // Win State:
 function winGame() {
-    window.removeEventListener("keypress", inputHandler);
+    window.removeEventListener("keydown", inputHandler);
     // HTML win screen:
     endScreen.style.display = "flex";
     if (currentRow==0) { endScreen.textContent = `Wow! You guessed ${nameArray[ran]} in 1 try!`; } 
@@ -254,7 +254,7 @@ function winGame() {
 // Loss State:
 function loseGame() {
     console.log("You Lose!")
-    window.removeEventListener("keypress", inputHandler);
+    window.removeEventListener("keydown", inputHandler);
     // HTML win screen:
     endScreen.style.display = "flex";
     endScreen.textContent = `Ach! Unfortunately you didn't guess the Pokemon`;
@@ -283,7 +283,7 @@ async function startGame() {
 
     // Pokemon Name fetch request:
     await fetchNames();
-    window.addEventListener("keypress", inputHandler);
+    window.addEventListener("keydown", inputHandler);
 
     // Random pick:
     ran = Math.floor(Math.random()*809);
