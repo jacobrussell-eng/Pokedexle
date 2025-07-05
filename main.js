@@ -27,6 +27,7 @@ const startOverlay = document.querySelector("#startScreen");
 const gameSpace = document.querySelector("#gameSpace");
 const endScreen = document.querySelector("#endScreen");
 const keyboardSpace = document.querySelector("#keyboardSpace");
+const mainSpace = document.getElementsByTagName("main")[0];
 
 // Fetching names from the .txt:
 const nameRequest = new Request('pokemon_names.txt');
@@ -242,11 +243,13 @@ function winGame() {
     endScreen.style.display = "flex";
     if (currentRow==0) { endScreen.textContent = `Wow! You guessed ${nameArray[ran]} in 1 try!`; } 
     else { endScreen.textContent = `Congrats! You guessed ${nameArray[ran]} in ${currentRow+1} tries!`; }
+    mainSpace.style.opacity = "0.5";
     
 
     // Restart Button:
     const restartButton = document.createElement('button');
     restartButton.textContent = "Play Again?";
+    restartButton.className = "restart";
     restartButton.addEventListener("click", startGame);
     endScreen.appendChild(restartButton);
 }
@@ -255,13 +258,15 @@ function winGame() {
 function loseGame() {
     console.log("You Lose!")
     window.removeEventListener("keydown", inputHandler);
-    // HTML win screen:
+    // HTML lose screen:
     endScreen.style.display = "flex";
     endScreen.textContent = `Ach! Unfortunately you didn't guess the Pokemon`;
+    mainSpace.style.opacity = "0.5";
 
     // Restart Button:
     const restartButton = document.createElement('button');
     restartButton.textContent = "Try Again?";
+    restartButton.className = "restart";
     restartButton.addEventListener("click", startGame);
     endScreen.appendChild(restartButton);
 }
@@ -274,6 +279,7 @@ async function startGame() {
     gameSpace.innerHTML = "";
     keyboardSpace.innerHTML = "";
     currentCol = 0; currentRow = 0;
+    mainSpace.style.opacity = "1";
 
     // HTML overlay handling:
     startOverlay.style.display = "none";

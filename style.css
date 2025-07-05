@@ -28,9 +28,8 @@ header {
 }
 
 #mainTitle {
-    font-family: "Pokemon Solid", sans-serif;
-    margin: 0.1em;
-    margin-top: 0.35em;
+    height: 10vh;
+    padding: 10px;
 }
 
 main {
@@ -49,8 +48,8 @@ main {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    width: 40vw;
-    height: 40vw;
+    width: 60vh;
+    height: 60vh;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -103,31 +102,45 @@ main {
 
 .letterbox {
     background-color: #fff;
-    border: 1px solid gray;
+    border: 2px solid gray;
     border-radius: 15%;
+    box-shadow: 1px 1px;
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: xx-large;
     margin: 0.5px;
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-family: 'GB Boot', 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
 }
 
 #endScreen {
     display: none;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-around;
     align-items: center;
     flex-wrap: nowrap;
     width: 40vh;
-    height: 40vh;
-    border: 1px solid blue;
+    height: 20vh;
+    border: 2px solid blue;
+    border-radius: 10px;
+    box-shadow: 5px 5px;
     background-color: #fff;
     z-index: 2000;
     position: absolute;
     left: 50%; top: 50%;
     transform: translate(-50%,-50%);
     text-align: center;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    padding-top: 2vh;
+}
+
+.restart {
+    width: 40%;
+    font-family: "GB Boot", sans-serif;
+    font-size: larger;
+    background-color: none;
+    border: 2px solid black;
+    border-radius: 10px;
 }
 
 #keyboardSpace {
@@ -156,10 +169,13 @@ main {
     height: max(7vh,1.6em);
     width: max(7vh,1.6em);
     background-color: #fff;
-    border: 0.5px dashed red;
-    /* font-size: 10cqh; */
+    border: 2px solid red;
+    border-radius: 5px;
+    box-shadow: 1px 1px;
+    margin: 1px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-family: 'GB Boot', 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    font-size: x-large;
 }
